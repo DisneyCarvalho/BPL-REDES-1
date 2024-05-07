@@ -35,7 +35,7 @@ def tcp_escuta(sock_tcp):
             # Receba uma resposta
             try:
                 data = sock_tcp.recv(1024)
-            except TimeoutError:
+            except TimeoutError and BrokenPipeError:
                 dic = {}
                 print("Falha na comunicação com broker")
             dic = json.loads(data.decode())
