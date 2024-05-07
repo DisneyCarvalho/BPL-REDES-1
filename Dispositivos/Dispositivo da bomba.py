@@ -19,7 +19,7 @@ def tcp_():
                 sock_tcp.connect(server_address)
                 threading.Thread(target=tcp_escuta,args=(sock_tcp,)).start()
                 break
-            except TimeoutError:
+            except TimeoutError and ConnectionRefusedError:
                 print("Conexão Com broker Falhou")
 
 
