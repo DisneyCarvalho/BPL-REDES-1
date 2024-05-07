@@ -55,7 +55,7 @@ class Broker:
 
             except ConnectionAbortedError:
                 break
-            except TimeoutError:
+            except TimeoutError and socket.timeout:
                 break
             except ConnectionResetError:
                 break
