@@ -1,0 +1,31 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receber Dados do Dispositivo</title>
+</head>
+<body>
+    <h1>Receber Dados do Dispositivo</h1>
+    <button id="start-button">Iniciar Conexão TCP/IP</button>
+
+    <script>
+        // Função para iniciar a conexão TCP/IP quando o botão é clicado
+        document.getElementById('start-button').addEventListener('click', function() {
+            // Enviar uma requisição para a view Django que inicia a conexão TCP/IP
+            fetch('/getdata/')
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data); // Exibir a resposta do servidor no console do navegador
+                    alert('Conexão TCP/IP iniciada!'); // Exibir um alerta para o usuário
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    alert('Erro ao iniciar conexão TCP/IP!');
+                });
+        });
+    </script>
+</body>
+</html>
