@@ -67,10 +67,12 @@ def tcp_escuta(sock_tcp):
 
 
 def escuta(sock):
-    while True:
-        data , addr = sock.recvfrom(1024)
-        if data == b'ping':
-            sock.sendto("Poke".encode(), addr)
+        try:
+            data , addr = sock.recvfrom(1024)
+            if data == b'ping':
+                sock.sendto("Poke".encode(), addr)
+        except ConnectionResetError:
+            print("Perdeu conexão")
 
 
 def udp_():
