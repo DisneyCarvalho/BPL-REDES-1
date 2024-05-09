@@ -8,11 +8,13 @@ import json
 
 def escuta(sock):
     print('Uncia')
-    while True:
-        data , addr = sock.recvfrom(1024)
-        if data == b'ping':
-            print("pong")
-            sock.sendto("Poke".encode(), addr)
+    try:
+            data , addr = sock.recvfrom(1024)
+            if data == b'ping':
+                sock.sendto("Poke".encode(), addr)
+        except ConnectionResetError:
+            print("Perdeu conexão")
+
 
 
 def main():
