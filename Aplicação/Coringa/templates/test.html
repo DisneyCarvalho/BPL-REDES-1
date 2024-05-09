@@ -28,6 +28,8 @@
 
     <script>
         $(document).ready(function() {
+            var ultimaAtualizacao = Date.now();
+
             function atualizarValor() {
                 return new Promise (function(resolve, reject){
             
@@ -105,6 +107,13 @@
     }
 }
     }
+            
+    function limparTela() {
+        var tempoAtual = Date.now();
+        if (tempoAtual - ultimaAtualizacao > 5000) { // Verifica se passaram mais de 5 segundos desde a última atualização
+            document.getElementById("centralizar").innerHTML = "Conectando..."; // Limpa o conteúdo da tela
+        }
+    }
 
     // Atualize o valor e as caixas a cada 1 segundo
     setInterval(function() {
@@ -114,6 +123,7 @@
                 console.log("Caixas atualizadas com sucesso.");
             })
             .catch(function(error) {
+                limparTela();
                 console.log("Erro ao obter o valor:", error);
             });
     }, 1000);
