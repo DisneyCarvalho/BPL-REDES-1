@@ -15,6 +15,8 @@ class Broker:
         #thred tcp/udp
         self.tcp_thread = threading.Thread(target=self.tcp_server)
         self.udp_thread = threading.Thread(target=self.udp_server)
+        self.lista_thread = threading.Thread(target=self.atualizaDispositivo)
+        self.lista_thread.daemon = True
         self.udp_thread.daemon = True
         self.tcp_thread.daemon = True
 
@@ -23,10 +25,12 @@ class Broker:
 
     def start(self):
         self.dispositivos = {}
+        self.fila = []
 
         #Incia as threads
         self.tcp_thread.start()
         self.udp_thread.start()
+        self.lista_thread.start()
 
     def tcp_server(self):
         tcp_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -61,12 +65,14 @@ class Broker:
                 break
             
             if not data:
-                print('Ta brekano')
                 break
             
             if data.decode() == 'Aplicacao':
                 client_socket.sendall(json.dumps(self.dispositivos).encode())
-                self.verificar_conexao_ativa()
+                try:
+                    self.verificar_conexao_ativa()
+                except:
+                    break
 
             if data.decode() == 'Bomba':
                 client_socket.sendall(json.dumps(self.dispositivos).encode())
@@ -93,10 +99,8 @@ class Broker:
             data, addr = udp_server.recvfrom(1024)      #### RECEBE
             
             if data.decode() != 'batman':
-                    try:
-                        self.dispositivos[addr[0]][addr[1]] = data.decode()
-                    except KeyError:
-                            self.dispositivos[addr[0]] = {(addr[1]) : data.decode()}
+                self.fila.append((addr,data))
+                    
             print(f"UDP {addr}: {data.decode()}")
 
 
@@ -116,12 +120,10 @@ class Broker:
                             self.verifica_ips()
 
                     except TimeoutError and socket.timeout and ConnectionResetError:
-                        print("Timeout cancela")
-                        print(self.dispositivos)
                         self.dispositivos.get((i),{}).pop(j, None)
                         self.verifica_ips()
         except RuntimeError:
-            print("resove")
+            pass
 
 
             
@@ -143,14 +145,20 @@ class Broker:
                     for l in dic:
                         if int(dic[l]) == j:
                             a = self.dispositivos[i][j]
-                            print("\n\n",a, "\n\n\n\n")
+                            #print("\n\n",a, "\n\n\n\n")
                             aux = json.loads(a)
                             aux["Boton"] = 1
                             self.dispositivos[i][j] = json.dumps(aux)
 
-                            print(self.dispositivos,"AQQuiiiiiiiiiiiii\n\n\n")
                     
-
+    def atualizaDispositivo(self):
+        while True:
+            for i in self.fila:
+                aux = self.fila.pop(0)
+                try:
+                    self.dispositivos[aux[0][0]][aux[0][1]] = str(aux[1].decode())
+                except KeyError:
+                        self.dispositivos[aux[0][0]] = {aux[0][1] : str(aux[1].decode())}
 
 
 
@@ -164,7 +172,7 @@ class Broker:
 
 
 
-ip = '192.168.1.6'  #Ip do servidor 
+ip = '0.0.0.0'  #Ip do servidor 
 
 if __name__ == "__main__":
     broker = Broker(tcp_port=12345, udp_port=25565,ip=ip)
