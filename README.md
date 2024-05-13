@@ -5,9 +5,9 @@
 cd aplicação/
 ```
 ## Rodar Aplicação
-- Ativar venv
+- Instale as bibliotecas
 ```console
-venv/Scripts/activate/
+pip install django djangorestframework
 ```
 - Rodar a aplicação
 ```console
