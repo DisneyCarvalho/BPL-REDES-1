@@ -1,0 +1,11 @@
+FROM python:3.11.4
+
+# Copie os arquivos Python para dentro do contêiner
+COPY . /app
+
+# Defina o diretório de trabalho como /app
+WORKDIR /app
+
+
+# Comando padrão para executar os arquivos Python
+CMD ["python", "Dispositivodetemperatura.py"]
