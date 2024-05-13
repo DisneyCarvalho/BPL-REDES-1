@@ -9,11 +9,11 @@ import json
 def escuta(sock):
     print('Uncia')
     try:
-            data , addr = sock.recvfrom(1024)
-            if data == b'ping':
-                sock.sendto("Poke".encode(), addr)
-        except ConnectionResetError:
-            print("Perdeu conexão")
+        data , addr = sock.recvfrom(1024)
+        if data == b'ping':
+            sock.sendto("Poke".encode(), addr)
+    except ConnectionResetError:
+        print("Perdeu conexão")
 
 
 
