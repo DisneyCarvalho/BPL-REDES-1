@@ -78,7 +78,8 @@ def escuta(sock):
 def udp_():
     # Criar um socket ipv4 com protocolo udp
     sock_udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    
+    sock_udp.bind(('192.168.1.6',0))
+
     
     server_address = (server.ip(), 25565) #Servidor ip/porta
 
@@ -92,7 +93,7 @@ def udp_():
     while True:
         try:
             sock_udp.sendto(json.dumps(dispo).encode(), server_address) 
-            addr = socket.gethostbyname(socket.gethostname()),sock_udp.getsockname()[1]
+            addr = sock_udp.getsockname()
             if thread:
                 a.start() 
                 thread = False 
