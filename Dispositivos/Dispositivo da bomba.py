@@ -19,7 +19,7 @@ def tcp_():
                 sock_tcp.connect(server_address)
                 threading.Thread(target=tcp_escuta,args=(sock_tcp,)).start()
                 break
-            except TimeoutError and ConnectionRefusedError:
+            except TimeoutError and ConnectionRefusedError and OSError:
                 print("Conexão Com broker Falhou")
 
 
@@ -67,10 +67,11 @@ def tcp_escuta(sock_tcp):
 
 
 def escuta(sock):
-        try:
-            data , addr = sock.recvfrom(1024)
-            if data == b'ping':
-                sock.sendto("Poke".encode(), addr)
+        while True:
+            try:
+                data , addr = sock.recvfrom(1024)
+                if data == b'ping':
+                    sock.sendto("Poke".encode(), addr)
         except ConnectionResetError:
             print("Perdeu conexão")
 
@@ -100,7 +101,7 @@ def udp_():
             
 
 
-        except TimeoutError:
+        except TimeoutError and OSError:
             print("Broker Desligado")
 
         time.sleep(3)
