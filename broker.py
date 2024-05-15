@@ -122,8 +122,9 @@ class Broker:
                     except TimeoutError and socket.timeout and ConnectionResetError:
                         self.dispositivos.get((i),{}).pop(j, None)
                         self.verifica_ips()
-        except RuntimeError:
-            pass
+        except RuntimeError and socket.timeout:
+            self.dispositivos.get((i),{}).pop(j, None)
+            self.verifica_ips()
 
 
             
