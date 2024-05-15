@@ -58,6 +58,7 @@ def get_data(request):
 
     try:
         servidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        servidor.settimeout(5)# Tempo que a aplicação fica esperando o broker ate desconectar
         servidor.connect(broker_address)
         print("Mensagem enviada: Aplicacao")
         servidor.sendall("Aplicacao".encode())
